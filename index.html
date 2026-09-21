@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>今日は、なんでもない一日のはずだった。</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2B2440;
+  --ink-soft:#5C5474;
+  --paper:#FFFDF6;
+  --paper-edge:#EDE6D6;
+  --pink:#FF6B9D;
+  --mint:#25BFAE;
+  --yellow:#FFC93C;
+  --grape:#7A5CF0;
+  --line:rgba(43,36,64,.14);
+  --shadow:rgba(43,36,64,.22);
+  --veil:rgba(255,255,255,0);
+  --sky-top:#BFE7F5;
+  --sky-bottom:#FFF0C9;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme: dark){
+    --ink:#F6F1E6;
+    --ink-soft:#BCB3CE;
+    --paper:#2A2440;
+    --paper-edge:#191430;
+    --line:rgba(246,241,230,.18);
+    --shadow:rgba(10,6,25,.55);
+    --veil:rgba(20,14,44,.62);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#F6F1E6;
+  --ink-soft:#BCB3CE;
+  --paper:#2A2440;
+  --paper-edge:#191430;
+  --line:rgba(246,241,230,.18);
+  --shadow:rgba(10,6,25,.55);
+  --veil:rgba(20,14,44,.62);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:var(--sky-bottom);
+  color:var(--ink);
+  font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  font-weight:500;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.75;
+  position:relative;
+  overflow-x:hidden;
+}
+#sky{
+  position:fixed; inset:0; z-index:-2;
+  background:linear-gradient(170deg,var(--sky-top) 0%,var(--sky-bottom) 100%);
+  transition:background 900ms ease;
+}
+#sky::after{
+  content:""; position:absolute; inset:0;
+  background:var(--veil);
+  transition:background 900ms ease;
+}
+.wrap{
+  max-width:600px;
+  margin:0 auto;
+  padding:clamp(18px,5vw,40px) clamp(14px,4vw,24px) 64px;
+}
+.screen{display:none;}
+.screen.on{display:block; animation:rise .45s cubic-bezier(.2,.8,.3,1) both;}
+@keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+.card{
+  background:var(--paper);
+  border-radius:26px;
+  padding:clamp(20px,5vw,32px);
+  box-shadow:0 10px 0 var(--paper-edge),0 18px 34px var(--shadow);
+}
+
+/* ---------- intro ---------- */
+.badge{
+  display:inline-block;
+  background:var(--yellow);
+  color:#2B2440;
+  font-weight:800;
+  font-size:.78rem;
+  letter-spacing:.06em;
+  padding:5px 12px;
+  border-radius:999px;
+  transform:rotate(-2deg);
+}
+h1{
+  font-weight:800;
+  font-size:clamp(1.62rem,6.6vw,2.35rem);
+  line-height:1.38;
+  margin:.55em 0 .3em;
+  letter-spacing:-.01em;
+}
+h1 .wavy{
+  background:linear-gradient(transparent 62%,var(--pink) 62%,var(--pink) 82%,transparent 82%);
+}
+.sub{
+  font-weight:700;
+  color:var(--ink);
+  font-size:clamp(.98rem,3.6vw,1.1rem);
+  margin:0 0 1.1em;
+}
+.lead{color:var(--ink-soft); font-size:.97rem; margin:0 0 1.2em;}
+.note{color:var(--ink-soft); font-size:.86rem;}
+
+/* ---------- buttons ---------- */
+.btn{
+  -webkit-appearance:none; appearance:none;
+  display:block; width:100%;
+  font-family:inherit; font-weight:800;
+  font-size:1.04rem;
+  color:#fff; background:var(--pink);
+  border:none; border-radius:18px;
+  padding:16px 20px;
+  cursor:pointer;
+  box-shadow:0 5px 0 #D8467A;
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;
+}
+.btn:active{transform:translateY(4px); box-shadow:0 1px 0 #D8467A;}
+.btn.ghost{
+  background:transparent; color:var(--ink);
+  border:2px solid var(--line); box-shadow:none; font-weight:700;
+}
+.btn.ghost:active{transform:translateY(2px);}
+.btn.mint{background:var(--mint); box-shadow:0 5px 0 #159184;}
+.btn.mint:active{box-shadow:0 1px 0 #159184;}
+.btn.grape{background:var(--grape); box-shadow:0 5px 0 #5B3FD0;}
+.btn.grape:active{box-shadow:0 1px 0 #5B3FD0;}
+button:focus-visible,a:focus-visible{outline:3px solid var(--grape); outline-offset:3px;}
+
+/* ---------- quiz ---------- */
+.qhead{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;}
+.qcount{font-weight:800; font-size:.84rem; letter-spacing:.1em; color:var(--ink-soft);}
+.clock{font-weight:800; font-size:.84rem; color:var(--ink-soft);}
+.dots{display:flex; gap:7px; margin-bottom:22px;}
+.dot{
+  flex:1; height:9px; border-radius:999px;
+  background:var(--line);
+  transition:background .3s ease,transform .3s ease;
+}
+.dot.done{background:var(--mint);}
+.dot.now{background:var(--pink); transform:scaleY(1.5);}
+.scene{
+  font-weight:800; font-size:1.3rem; margin:0 0 .5em;
+  display:flex; align-items:center; gap:.45em;
+}
+.scene .mark{
+  width:10px; height:22px; border-radius:4px; background:var(--yellow); display:inline-block; flex:none;
+}
+.story{white-space:pre-line; font-size:1rem; margin:0 0 1.5em;}
+.story .said{font-weight:700;}
+.ask{font-weight:800; margin:0 0 .9em;}
+.choices{display:flex; flex-direction:column; gap:11px;}
+.choice{
+  -webkit-appearance:none; appearance:none;
+  font-family:inherit; font-weight:700; font-size:1rem; text-align:left;
+  color:var(--ink); background:var(--paper);
+  border:2px solid var(--line); border-radius:16px;
+  padding:14px 16px 14px 46px;
+  position:relative; cursor:pointer; line-height:1.6;
+  transition:transform .12s ease,border-color .12s ease,background .12s ease;
+}
+.choice .key{
+  position:absolute; left:13px; top:14px;
+  width:24px; height:24px; border-radius:8px;
+  background:var(--line); color:var(--ink);
+  font-size:.78rem; font-weight:800;
+  display:grid; place-items:center;
+  transition:background .12s ease,color .12s ease;
+}
+.choice:hover{border-color:var(--pink);}
+.choice.picked{
+  background:var(--pink); color:#fff; border-color:var(--pink);
+  transform:scale(1.02);
+}
+.choice.picked .key{background:rgba(255,255,255,.9); color:var(--pink);}
+
+/* ---------- analyzing ---------- */
+#analyzing .card{text-align:center; padding-top:46px; padding-bottom:46px;}
+.aline{
+  font-weight:800; font-size:1.06rem; margin:.7em 0;
+  opacity:0; transform:translateY(8px);
+}
+.aline.show{animation:pop .5s cubic-bezier(.2,.8,.3,1) forwards;}
+@keyframes pop{to{opacity:1;transform:none;}}
+.spinner{
+  width:42px;height:42px;margin:6px auto 18px;border-radius:50%;
+  border:5px solid var(--line); border-top-color:var(--pink);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ---------- result ---------- */
+.rtop{text-align:center;}
+.remoji{font-size:clamp(3.4rem,15vw,4.6rem); line-height:1; display:block; margin-bottom:.12em;}
+.rname{font-weight:800; font-size:clamp(1.45rem,6.4vw,2rem); line-height:1.35; margin:0;}
+.rcatch{
+  font-weight:700; color:var(--ink-soft); font-size:.98rem;
+  margin:.7em 0 0;
+}
+.rule{height:2px; background:var(--line); border:0; margin:26px 0;}
+.blk{margin:0 0 22px;}
+.blk h3{
+  font-size:.95rem; font-weight:800; margin:0 0 .55em;
+  display:flex; align-items:center; gap:.4em;
+}
+.blk h3::before{content:""; width:8px;height:18px;border-radius:3px;background:var(--mint);}
+.blk p{margin:0 0 .8em; white-space:pre-line;}
+.aru{list-style:none; padding:0; margin:0;}
+.aru li{
+  position:relative; padding:9px 12px 9px 34px; margin-bottom:7px;
+  background:color-mix(in srgb,var(--yellow) 22%,transparent);
+  border-radius:12px; font-weight:700; font-size:.95rem; line-height:1.55;
+}
+.aru li::before{content:"✓"; position:absolute; left:12px; top:9px; color:var(--pink); font-weight:800;}
+.quote{
+  border-left:4px solid var(--pink); padding:2px 0 2px 14px;
+  font-weight:800; font-size:1.02rem;
+}
+.rare{font-weight:800; letter-spacing:.2em; color:var(--yellow); font-size:1.3rem;}
+.actions{display:flex; flex-direction:column; gap:11px; margin-top:26px;}
+.soudan{
+  margin-top:26px; padding:20px; border-radius:20px;
+  background:color-mix(in srgb,var(--grape) 12%,transparent);
+  border:2px dashed color-mix(in srgb,var(--grape) 45%,transparent);
+}
+.soudan p{margin:0 0 .8em;}
+.tags{display:flex; flex-wrap:wrap; gap:7px; margin:0 0 14px;}
+.tag{
+  background:var(--paper); border:2px solid var(--line);
+  border-radius:999px; padding:5px 12px; font-size:.86rem; font-weight:700;
+}
+.toast{
+  position:fixed; left:50%; bottom:22px; transform:translate(-50%,20px);
+  background:var(--ink); color:var(--paper);
+  padding:12px 18px; border-radius:14px; font-weight:700; font-size:.92rem;
+  opacity:0; pointer-events:none; transition:.3s ease; z-index:9; max-width:90vw; text-align:center;
+}
+.toast.on{opacity:1; transform:translate(-50%,0);}
+.special .card{position:relative; overflow:hidden;}
+.special .card::before{
+  content:""; position:absolute; inset:-40%;
+  background:conic-gradient(from 0deg,transparent 0 78%,color-mix(in srgb,var(--yellow) 55%,transparent) 88%,transparent 100%);
+  animation:sweep 6s linear infinite; pointer-events:none;
+}
+@keyframes sweep{to{transform:rotate(360deg);}}
+.foot{text-align:center; margin-top:26px; font-size:.82rem; color:var(--ink-soft);}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<div class="wrap">
+
+<!-- ================= INTRO ================= -->
+<section id="intro" class="screen on">
+  <div class="card">
+    <span class="badge">8つの選択だけ・所要3分</span>
+    <h1>今日は、<br><span class="wavy">なんでもない一日</span>の<br>はずだった。</h1>
+    <p class="sub">8つの選択で、あなたの「隠れたクセ」がバレます。</p>
+    <p class="lead">友達と過ごす、なんでもない一日。
+でも、予定変更、ちょっとしたトラブル、突然の相談……。
+
+そんな一日の中で、あなたならどうする？
+8つの場面を選んでください。</p>
+    <p class="note" style="margin-bottom:22px;">正解はありません。できるだけ「自分ならこうする」で答えてください。</p>
+    <button class="btn" id="startBtn">一日を始める</button>
+  </div>
+  <p class="foot">結果は12種類＋レア1種類。ログイン不要・記録も残りません。</p>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz" class="screen">
+  <div class="card">
+    <div class="qhead">
+      <span class="qcount" id="qcount">QUESTION 1 / 8</span>
+      <span class="clock" id="clock">午前9:00</span>
+    </div>
+    <div class="dots" id="dots"></div>
+    <h2 class="scene"><span class="mark"></span><span id="sceneName"></span></h2>
+    <p class="story" id="story"></p>
+    <p class="ask" id="ask"></p>
+    <div class="choices" id="choices"></div>
+  </div>
+</section>
+
+<!-- ================= ANALYZING ================= -->
+<section id="analyzing" class="screen">
+  <div class="card">
+    <div class="spinner"></div>
+    <div id="alines"></div>
+  </div>
+</section>
+
+<!-- ================= RESULT ================= -->
+<section id="result" class="screen">
+  <div class="card">
+    <div class="rtop">
+      <span class="remoji" id="rEmoji"></span>
+      <h2 class="rname" id="rName"></h2>
+      <p class="rcatch" id="rCatch"></p>
+      <p id="rRare" style="display:none;margin:.9em 0 0;"><span class="rare">★★★★★</span><br><span class="note">レア度：出る人はほとんどいません</span></p>
+    </div>
+    <hr class="rule">
+    <div class="blk"><h3>あなたはこういう人</h3><p id="rDesc"></p></div>
+    <div class="blk"><h3>あるある</h3><ul class="aru" id="rAru"></ul></div>
+    <div class="blk"><h3>あなたの特徴</h3><p id="rFeat"></p></div>
+    <div class="blk"><h3>意外な一面</h3><p id="rSurprise"></p></div>
+    <div class="blk"><h3>友達から見ると</h3><p class="quote" id="rFriend"></p></div>
+
+    <div class="soudan">
+      <p style="font-weight:800;">ちなみに……<br>このタイプ、こんなことで悩みがちです。</p>
+      <div class="tags" id="rTags"></div>
+      <p id="rWorry" style="font-weight:700;"></p>
+      <p class="note" style="margin:0 0 14px;">もちろん、当たってなくても大丈夫。<br>もし今ちょっと誰かに話してみたいことがあるなら、このままどうぞ。</p>
+      <button class="btn grape" id="soudanBtn">お悩み相談所へ</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn mint" id="shareBtn">この結果、友達に見せる</button>
+      <button class="btn ghost" id="retryBtn">もう一度、別の一日を過ごす</button>
+    </div>
+  </div>
+  <p class="foot">12種類のうちの1つです。友達と結果を見せ合うと、だいたい話が広がります。</p>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   設定：お悩み相談所の行き先。
+   URLを入れるとボタンがそのページを開きます。
+   空のままなら、ブース案内のメッセージが出ます。
+   ========================================================= */
+const CONFIG = {
+  soudanUrl: "",
+  soudanMessage: "この先の「お悩み相談所」で、スタッフがお話をききます。\nこの結果の画面を見せてもらえると、話が早いかも。"
+};
+
+/* ---------- 空の色（朝→夕方→夜） ---------- */
+const SKY = [
+  ["#CFE9F7","#FFF3D4"], ["#C3E6F8","#FFF7DF"], ["#B8E3FA","#FFFBEA"],
+  ["#A9DCF8","#E9F6E2"], ["#9FD6F3","#FFEBD0"], ["#A9CDEF","#FFDFC0"],
+  ["#F0AEB0","#FFD2A1"], ["#7E7BC0","#F4A58E"]
+];
+const CLOCKS = ["午前9:00","午前10:20","午前11:40","午後1:10","午後2:30","午後3:40","午後5:20","午後6:50"];
+
+/* ---------- 質問データ ---------- */
+const Q = [
+  { scene:"朝",
+    story:`今日は友達と遊ぶ日。\n待ち合わせ場所へ向かおうとしていると、友達からメッセージが来た。\n\n「ごめん！10分くらい遅れる！」`,
+    ask:"さて、あなたは？",
+    c:[
+      {t:"「オッケー、待ってるー」とだけ返して、特に気にせず待つ。", s:{STABILITY:2}},
+      {t:"「無理しないでね、何かあった？」と気遣う。", s:{SOCIAL:2}},
+      {t:"「じゃあ先にその辺うろついとくわ」と、勝手に別の場所へ動き出す。", s:{NOVELTY:2,SELF:1}},
+      {t:"（口には出さず）「じゃあ、あと10分は自由時間だな」と頭の中で予定を組み替える。", s:{THINK:2,SELF:1}}
+    ]},
+  { scene:"待ち合わせ",
+    story:`無事に合流。\n「今日はどこ行く？」\n\n……ところが、誰も具体的な予定を決めていない。\n友達がこちらを見る。`,
+    ask:"どうする？",
+    c:[
+      {t:"「じゃあ、あそこ行こう」とパッと決めて、もう歩き出している。", s:{ACTION:2,SELF:1}},
+      {t:"自分の希望は言わず、「みんなは正直どこ行きたい？」と聞き役に回る。", s:{SOCIAL:2}},
+      {t:"「今日は行ったことない場所縛りで」と、条件から遊びはじめる。", s:{NOVELTY:2}},
+      {t:"とりあえずスマホで候補を2、3個調べてから、みんなに見せる。", s:{THINK:2}}
+    ]},
+  { scene:"予定変更",
+    story:`向かった店は、まさかの臨時休業。\n全員、\n\n「え……。」\n\nとなる。`,
+    ask:"あなたの第一声に一番近いのは？",
+    c:[
+      {t:"「じゃあ次、次！」と、もうスマホで別の店を検索し始めている。", s:{ACTION:2}},
+      {t:"「え……楽しみにしてたのに」と、しばらく引きずる。", s:{STABILITY:2}},
+      {t:"「逆にラッキーじゃん、知らない店行けるし」と笑う。", s:{NOVELTY:2,SELF:1}},
+      {t:"「候補3つくらい出すから、みんなで決めよ」とその場を仕切る。", s:{SOCIAL:1,THINK:1}}
+    ]},
+  { scene:"突然の相談",
+    story:`別の店を探して歩いている途中。\n友達が急に、\n\n「……ちょっと相談したいことあるんだけど。」\n\nと言う。少し真剣な顔をしている。`,
+    ask:"あなたなら？",
+    c:[
+      {t:"表情をうかがいながら、「うん、聞くよ」と静かに促す。", s:{SOCIAL:2}},
+      {t:"「大丈夫、何でも話して」と、肩をぽんと叩いて安心させる。", s:{STABILITY:2}},
+      {t:"「重い話？軽い話？」と、先に空気を確認しにいく。", s:{NOVELTY:2,SELF:1}},
+      {t:"「じゃあどっか座れるとこ行こう」と、すぐ場所を変える。", s:{ACTION:2}}
+    ]},
+  { scene:"予想外の寄り道",
+    story:`相談が一段落した。\n歩いていると、たまたま小さなイベントをやっているのを見つける。\n予定には完全にない。\n\n友達が、\n「ちょっと見ていかない？」\nと言う。`,
+    ask:"あなたは？",
+    c:[
+      {t:"二つ返事で「行こう行こう」と、もう足が動いている。", s:{ACTION:2}},
+      {t:"「え、時間大丈夫かな……」と、反射的にスケジュールを確認する。", s:{THINK:2}},
+      {t:"「こういう予定外、わりと好きなんだよね」とニヤける。", s:{NOVELTY:2,SELF:1}},
+      {t:"自分の希望より先に、「みんながいいなら」と周りを見る。", s:{SOCIAL:2}}
+    ]},
+  { scene:"小さな事件",
+    story:`イベントを見ていると、友達の一人がうっかり飲み物をこぼしてしまう。\n本人はかなり恥ずかしそう。`,
+    ask:"あなたなら？",
+    c:[
+      {t:"「大丈夫？」と本人に声をかけながら、その場でティッシュを探す。", s:{ACTION:2}},
+      {t:"「大丈夫大丈夫、むしろ運が良かったまである」と笑いに変える。", s:{SOCIAL:2}},
+      {t:"「あ、こっちにも垂れてるかも」と、こぼれた範囲を先に確認する。", s:{THINK:2}},
+      {t:"「これはこれで今日の思い出だわ」と、むしろ面白がる。", s:{NOVELTY:2,SELF:1}}
+    ]},
+  { scene:"帰り道",
+    story:`気づけば夕方。\n一日の予定はかなり変わってしまった。\n\n友達が、\n「今日、最初の予定と全然違う一日になったね。」\nと言う。`,
+    ask:"あなたが一番近いと思う反応は？",
+    c:[
+      {t:"「でも結果、めちゃくちゃ楽しかったからヨシ」と切り替えが早い。", s:{ACTION:1,STABILITY:1}},
+      {t:"「最初の予定も、正直ちょっと気になってたんだけどね」と本音がこぼれる。", s:{STABILITY:2}},
+      {t:"「予定通りより、こっちの方が絶対覚えてる」と言い切る。", s:{NOVELTY:2,SELF:1}},
+      {t:"「みんなでその場で決めながら動けたのがよかったな」としみじみ言う。", s:{SOCIAL:2}}
+    ]},
+  { scene:"最後の一言",
+    story:`駅に着いた。\n友達が、\n\n「今日は楽しかったね。またこういうことしようよ。」\n\nと言う。`,
+    ask:"今日を振り返って、あなたが一番思っていそうなのは？",
+    c:[
+      {t:"「次はもっと変わったとこ行きたいな」と、もう次のことを考えている。", s:{NOVELTY:2,SELF:1}},
+      {t:"「あれ、今日ちょっと変なこと言ってなかったかな……」と一人反省会が始まる。", s:{THINK:2}},
+      {t:"「結局、誰といるかが一番大事だな」としみじみ思う。", s:{SOCIAL:2}},
+      {t:"「予定通りじゃなくても、案外なんとかなるもんだな」と静かに納得する。", s:{STABILITY:1,ACTION:1,SELF:1}}
+    ]}
+];
+
+/* ---------- 結果タイプ ---------- */
+const TYPES = {
+  T01:{emoji:"🧠",name:"脳内反省会タイプ",
+    catch:"あの一言、まだちょっと引きずってるでしょ。",
+    desc:`あなたは、一度起きたことを頭の中でもう一度考えるタイプ。\n「あのとき、ああ言えばよかったかな。」\n「変な言い方になってなかったかな。」\n「相手はどう思ったんだろう。」\n\nそんなことを考えているうちに、気づけば脳内で今日の出来事を再放送している。\nでも不思議なことに、翌日には普通に元気。`,
+    aru:["LINEを送ったあと読み返す","寝る前に会話を思い出す","人の失敗には優しい","自分の失敗だけ何度も思い出す"],
+    feat:"考えすぎに見えて、実はかなり人との関係を大切にしている。",
+    surprise:"人の失敗のほうは、だいたい3日で完全に忘れている。厳しいのは自分に対してだけ。",
+    friend:"「そこまで気にしてたの！？」",
+    worry:"「あの発言、変じゃなかったかな」を、何度も頭の中で再生してしまうタイプです。既読がすぐつかないだけで相手の反応を何パターンも予想したり、話せば一瞬で終わる小さな不安を、言い出せないまま何日も一人で抱えていたりしませんか。ふとした瞬間に昔の失言まで思い出して、一人で気まずくなることもあるかもしれません。"},
+  T02:{emoji:"🚀",name:"とりあえず行っちゃえタイプ",
+    catch:"考えるより先に、もう動いてます。",
+    desc:`迷ったら動く。\n面白そうなら行く。\n予定が変わったら、その場で別のことを始める。\n\nあなたにとっては「完璧な計画」より「実際にやってみること」のほうが大事。`,
+    aru:["フットワークが軽い","誘われると行きたくなる","「まあ何とかなる」が口ぐせ","後から考えて「ちょっと無茶だったかも」となる"],
+    feat:"失敗を恐れていないというより、何もしなかったことを後悔したくない。",
+    surprise:"動けない日は、実はけっこう落ち込む。止まっている自分がいちばん苦手。",
+    friend:"「誘ったらだいたい来る。」",
+    worry:"勢いで決めたことを、あとからじっくり振り返る時間がないまま、次の予定に飛び込んでしまうタイプです。動いている間は平気でも、ふと一人になった瞬間に、将来のことや「このままで積み上がってるのかな」という漠然とした焦りが顔を出したりしませんか。忙しくしていないと落ち着かない、というのも実はその裏返しかもしれません。"},
+  T03:{emoji:"🫶",name:"全員幸せでいてほしいタイプ",
+    catch:"自分より先に、まず周りを見ちゃう。",
+    desc:`誰かが困っていると気になる。\n場が微妙な空気になると気になる。\n誰かが一人でいると気になる。\n\nあなたは、人の小さな変化をかなり拾っている。`,
+    aru:["「大丈夫？」が自然に出る","人の機嫌に気づく","頼まれると断りづらい","自分の希望を後回しにする"],
+    feat:"優しいというより、人が嫌な思いをしている状態を放っておけない。",
+    surprise:"「自分は何がしたい？」と聞かれると、いちばん答えに詰まる。",
+    friend:"「相談するならこの人。」",
+    worry:"周りの機嫌や空気にはすぐ気づくのに、自分が本当は何をしたいのか、聞かれると意外と分からなくなるタイプです。頼まれごとを断れずに抱え込んで、自分の予定や気持ちがいつも後回しになっていませんか。恋愛でも、相手に合わせることを優先しすぎて、自分の希望をうまく言えないことがあるかもしれません。"},
+  T04:{emoji:"🎰",name:"人生ガチャタイプ",
+    catch:"予定通りより、まさかの方が好き。",
+    desc:`決まったルートより、偶然見つけたもの。\n予定通りの一日より、思いがけず起きた出来事。\n\nあなたは「何が起こるか分からない」を楽しめるタイプ。`,
+    aru:["新しい店に弱い","面白そうなら予定変更","「とりあえず行ってみよう」が多い","好奇心で寄り道する"],
+    feat:"あなたにとって予定変更は「失敗」ではなく、新しいイベントの発生。",
+    surprise:"毎日同じことの繰り返しになると、想像以上に元気がなくなる。",
+    friend:"「一緒にいると何か起きる。」",
+    worry:"予定通りより、思いがけない出来事のほうにワクワクするタイプです。ただその分、毎日が同じペースで続くと、理由もなく気持ちがざわついたり、将来のことを考えたときに「このままの毎日でいいのかな」と急に不安になったりしませんか。刺激がない期間ほど、実はしんどく感じているかもしれません。"},
+  T05:{emoji:"🏰",name:"完璧スタート待ちタイプ",
+    catch:"準備は完璧。あとは踏み出すだけ。",
+    desc:`始める前に考える。\n調べる。\n比較する。\n準備する。\n\n「どうせやるならちゃんとやりたい」という気持ちが強い。`,
+    aru:["調べすぎる","失敗したくない","計画を立てるのは好き","「もうちょっと準備してから」となる"],
+    feat:"怠けているわけではない。むしろ、自分の中の合格ラインが高い。",
+    surprise:"いざ始めると、周りが驚くくらい早い。始めるまでが長いだけ。",
+    friend:"「もう十分準備できてるよ。」",
+    worry:"始める前にとにかく調べて、比較して、準備したいタイプです。その分「まだ足りない」が口ぐせになって、本当はやりたかったことがずっと「そのうち」のまま止まっていませんか。周りが先に一歩踏み出しているのを見ると、焦りと「自分にはまだ早い」という気持ちの間で揺れることがあるかもしれません。"},
+  T06:{emoji:"🐈",name:"自由席タイプ",
+    catch:"一人も好き。でも誘いにはわりと弱い。",
+    desc:`人といるのも好き。\n一人でいるのも好き。\n\nどちらか一方ではなく、自分にちょうどいい距離感を大切にする。`,
+    aru:["一人行動できる","返信が遅いことがある","急に一人になりたくなる","でも誘われると嬉しい"],
+    feat:"人が嫌いなのではなく、人との距離を自分で調整したい。",
+    surprise:"誘われなかった日のことを、けっこう覚えている。",
+    friend:"「自由だけど、ちゃんと仲間。」",
+    worry:"一人の時間を大事にしているはずなのに、誘われなかったり連絡が減ったりすると、実はけっこう気にしてしまうタイプです。自分から距離を置いたはずの寂しさと、うまく折り合いがつかないことはありませんか。恋愛でも、近づきすぎるのが少し怖くて、無意識にブレーキをかけていることがあるかもしれません。"},
+  T07:{emoji:"🪞",name:"自分への採点だけ鬼タイプ",
+    catch:"他人には甘いのに、自分にだけ厳しい。",
+    desc:`友達が同じ失敗をしたら、\n「そんなの気にしなくていいよ。」\nと言える。\n\nでも自分が同じ失敗をすると、\n「もっとできたでしょ。」\nとなる。`,
+    aru:["人と比べる","褒められても「いやいや」となる","できたことよりできなかったことを見る","「もっと頑張らないと」と思う"],
+    feat:"周りが思っている以上に、自分を厳しく採点している。",
+    surprise:"実は、けっこういろいろ達成している。数えていないだけ。",
+    friend:"「もっと自信持っていいのに。」",
+    worry:"他人の失敗には優しいのに、自分の失敗だけは何度も引きずってしまうタイプです。頑張った分を自分でちゃんと認められず、「もっとできたはず」が積み重なって、気づけば自分に自信が持てなくなっていませんか。人と比べて落ち込むことも、実は多いのではないでしょうか。"},
+  T08:{emoji:"🔐",name:"心の金庫タイプ",
+    catch:"最後の本音だけ、まだ渡してない。",
+    desc:`人と話すことはできる。\n笑うこともできる。\n\nでも、本当に大事なことは簡単には言わない。`,
+    aru:["「別に」が多い","悩みを一人で抱える","本音を話すまで時間がかかる","信頼した人にはかなり深く心を開く"],
+    feat:"人とのつながりを大切にしていないのではない。むしろ逆。大切だからこそ、簡単には預けない。",
+    surprise:"一度話し始めると、止まらないことがある。ためている量が多いから。",
+    friend:"「もっと頼ってくれていいのに。」",
+    worry:"人と話すのは平気なのに、本当に大事な話だけはなかなか言えないタイプです。一人で抱え込んで、限界に近くなってからやっと誰かに話す、ということを繰り返していませんか。恋愛でも、本音を見せるタイミングをずっと逃してしまうことがあるかもしれません。"},
+  T09:{emoji:"🧩",name:"人間関係プロデューサータイプ",
+    catch:"気づけば、その場を回してる自分がいる。",
+    desc:`「この二人、気が合いそう。」\n「今この人に話を振ったほうがよさそう。」\n「この二人ちょっと気まずそう。」\n\nそんなことを自然に察知する。`,
+    aru:["調整役になりがち","相談される","人を紹介するのが得意","場の空気を整える"],
+    feat:"他人の問題はよく見える。ただし、自分の問題になると急に分からなくなる。",
+    surprise:"帰り道で一人になった瞬間、急に無言になる。かなり働いていた証拠。",
+    friend:"「人の相談にはめちゃくちゃ強い。」",
+    worry:"人と人の間を自然に調整できるのに、自分の悩みになると急に誰に相談していいか分からなくなるタイプです。周りの相談に乗っているうちに、自分の気持ちを話す順番がいつも後回しになっていませんか。将来のことも、人には整理してあげられるのに、自分のことだけはなぜかうまく整理できなかったりしませんか。"},
+  T10:{emoji:"👽",name:"「それ、本当に普通？」タイプ",
+    catch:"「普通」に、ちょっと納得してない。",
+    desc:`周りと同じであることより、\n「自分はどう思うか」\nを大切にする。`,
+    aru:["「普通はこう」に疑問を持つ","独特なアイデアが出る","人と違うことを面白がる","自分なりのやり方がある"],
+    feat:"反抗したいわけではない。ただ、納得できないものをそのまま受け入れたくない。",
+    surprise:"合わせようと思えば普通に合わせられる。やらないだけ。",
+    friend:"「その発想どこから出てきた？」",
+    worry:"「普通はこう」に、心のどこかで納得できていないタイプです。周りに合わせることはできるのに、あえてそうしない分、将来の選択について「自分だけ違う道を選んでいいのかな」と一人で悩むことがありませんか。誰かに相談しても分かってもらえない気がして、結局自分の中だけで結論を出してしまうこともあるかもしれません。"},
+  T11:{emoji:"🎭",name:"人格切り替え職人タイプ",
+    catch:"相手によって、素で変わる自分がいる。",
+    desc:`親しい友達。\n家族。\n初対面。\n一人の時間。\n\n全部ちょっと違う。\nでも、どれも嘘ではない。`,
+    aru:["相手によって話し方が変わる","初対面では様子を見る","場に合わせるのが得意","一人になった瞬間かなり静かになる"],
+    feat:"「本当の自分が分からない」のではない。自分の中にいくつもモードがある。",
+    surprise:"モードを切り替えなくていい相手の前では、いちばんよく笑う。",
+    friend:"「人によってキャラ違くない？」",
+    worry:"相手によって自然と自分を切り替えられるタイプです。ただその分、「本当の自分ってどれなんだろう」と、自分でもふと分からなくなる瞬間がありませんか。恋愛では、素の自分を見せるタイミングがつかめず、なかなか距離が縮まりきらないと感じることがあるかもしれません。"},
+  T12:{emoji:"👑",name:"主人公マインドタイプ",
+    catch:"最後は自分で決めたい。それだけ。",
+    desc:`人の意見はちゃんと聞く。\nでも最後は、\n「自分がどうしたいか」\nで決めたい。`,
+    aru:["自分で決めたい","納得できないと動きにくい","周りに流されにくい","好き嫌いが比較的はっきりしている"],
+    feat:"強そうに見えるけれど、自分で決めたからこそ、その結果も自分で気にする。",
+    surprise:"決めたあとで、こっそり何度も確認している。",
+    friend:"「なんだかんだ自分の道を行く。」",
+    worry:"人の意見を聞きつつも、最後は自分で決めたいタイプです。ただその分、決めたことの責任も全部一人で背負い込みがちで、将来のことも誰かに頼らず一人で抱えていませんか。強く見られがちな分、弱音を吐くタイミングを逃してしまうこともあるかもしれません。"},
+  SP:{emoji:"🌟",name:"説明書なしで生きてる人",
+    catch:"型に、そもそも収まってない。",
+    desc:`もちろん冗談。\n\nあなたは一つの型に収まりにくい。\n人と違う選択をしてもあまり気にせず、\n「自分はこうしたい」\nという感覚を優先しやすい。`,
+    aru:["「普通はこう」があまり効かない","独自ルートを選びがち","予定変更に強い","「なんとかなる」で本当になんとかすることがある"],
+    feat:"型にはまらないというより、はまる必要を感じていない。",
+    surprise:"本人にとっては、全部ごく普通の判断をしているだけ。",
+    friend:"「え、そっち行く！？」",
+    worry:"型にはまらない生き方を、あまり気にせず選べるタイプです。ただ、周りとテンポが合わないと感じる瞬間や、将来の話で「みんなと同じようにはいかないかも」と感じる場面で、ふと一人になったような感覚を覚えることがあるかもしれません。",
+    rare:true}
+};
+
+/* ---------- 上位2軸 → 12タイプ ----------
+   判定に使うのは ACTION / THINK / SOCIAL / NOVELTY / STABILITY の5軸のみ。
+   SELFはここでは使わず、同点時の補正（tieBreak内）でのみ働かせる。
+   各ペアの対応は、全選択パターンをシミュレーションして実際の出現頻度を
+   計算した上で、12タイプにできるだけ均等（各7〜11%程度）になるよう
+   割り当てている。ナラティブの都合だけで組んだ表ではない。 */
+const MAP = {
+  "NOVELTY|SOCIAL":"T04",  "SOCIAL|NOVELTY":"T11",
+  "NOVELTY|ACTION":"T02",  "SOCIAL|ACTION":"T09",
+  "NOVELTY|THINK":"T10",   "STABILITY|THINK":"T10",
+  "SOCIAL|THINK":"T03",    "STABILITY|SOCIAL":"T03",
+  "NOVELTY|STABILITY":"T06","STABILITY|NOVELTY":"T06",
+  "ACTION|NOVELTY":"T05",  "STABILITY|ACTION":"T05",
+  "THINK|NOVELTY":"T07",   "THINK|STABILITY":"T07",
+  "ACTION|SOCIAL":"T12",   "THINK|ACTION":"T12",
+  "THINK|SOCIAL":"T01",    "ACTION|THINK":"T01",
+  "SOCIAL|STABILITY":"T08","ACTION|STABILITY":"T08"
+};
+const ORDER = ["ACTION","THINK","SOCIAL","NOVELTY","STABILITY"];
+
+/* ---------- 状態 ---------- */
+let idx = 0, picks = [], locked = false;
+const $ = id => document.getElementById(id);
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  $(id).classList.add("on");
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function paintSky(i){
+  const s = SKY[Math.min(i,SKY.length-1)];
+  document.documentElement.style.setProperty("--sky-top",s[0]);
+  document.documentElement.style.setProperty("--sky-bottom",s[1]);
+}
+function buildDots(){
+  $("dots").innerHTML = Q.map(()=>'<span class="dot"></span>').join("");
+}
+function shuffled(n){
+  // Fisher-Yates。表示順だけをシャッフルし、採点は元のインデックスで行う。
+  const arr = Array.from({length:n},(_,i)=>i);
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function renderQ(){
+  const q = Q[idx];
+  paintSky(idx);
+  $("qcount").textContent = `QUESTION ${idx+1} / 8`;
+  $("clock").textContent = CLOCKS[idx];
+  [...$("dots").children].forEach((d,i)=>{
+    d.className = "dot" + (i<idx?" done":i===idx?" now":"");
+  });
+  $("sceneName").textContent = q.scene;
+  $("story").textContent = q.story;
+  $("ask").textContent = q.ask;
+  const wrap = $("choices");
+  wrap.innerHTML = "";
+  // 選択肢の表示順を毎回ランダム化する（A固定にならないように）
+  const order = shuffled(q.c.length);
+  order.forEach((origIndex, visualPos)=>{
+    const c = q.c[origIndex];
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.type = "button";
+    b.innerHTML = `<span class="key">${"ABCD"[visualPos]}</span>`;
+    b.appendChild(document.createTextNode(c.t));
+    b.addEventListener("click",()=>pick(origIndex,b));
+    wrap.appendChild(b);
+  });
+  locked = false;
+}
+function pick(i,btn){
+  if(locked) return;
+  locked = true;
+  btn.classList.add("picked");
+  picks[idx] = i;
+  setTimeout(()=>{
+    if(idx < Q.length-1){ idx++; renderQ(); }
+    else { paintSky(7); analyze(); }
+  },320);
+}
+
+/* ---------- 集計 ---------- */
+function tally(){
+  const sc = {ACTION:0,THINK:0,SOCIAL:0,NOVELTY:0,STABILITY:0};
+  const hits = {ACTION:0,THINK:0,SOCIAL:0,NOVELTY:0,STABILITY:0};
+  let selfTotal = 0;
+  picks.forEach((p,qi)=>{
+    const s = Q[qi].c[p].s;
+    for(const k in s){
+      if(k === "SELF"){ selfTotal += s[k]; continue; }
+      sc[k] += s[k];
+      hits[k]++;
+    }
+  });
+  return {sc,hits,selfTotal};
+}
+// 同点のときにどちらの軸を優先するか：Q8 → Q4 → Q6 → 固定順位（SELFはここでのみ働く）
+function tieBreak(a,b){
+  const prefQ = [7,3,5];
+  for(const qi of prefQ){
+    const s = Q[qi].c[picks[qi]].s;
+    const aIn = !!s[a], bIn = !!s[b];
+    if(aIn && !bIn) return a;
+    if(bIn && !aIn) return b;
+  }
+  return ORDER.indexOf(a) < ORDER.indexOf(b) ? a : b;
+}
+function rankAxes(sc){
+  return ORDER.slice().sort((a,b)=>{
+    if(sc[b] !== sc[a]) return sc[b]-sc[a];
+    return tieBreak(a,b) === a ? -1 : 1;
+  });
+}
+function judge(){
+  const {sc,hits} = tally();
+  const r = rankAxes(sc);
+  const top = r[0], second = r[1];
+  // SPECIAL：1つの傾向が8問中6問以上で出て、かつ2位を大きく引き離した場合
+  if(hits[top] >= 6 && (sc[top]-sc[second]) >= 5) return "SP";
+  return MAP[top+"|"+second] || "T12";
+}
+
+/* ---------- 演出 ---------- */
+const ALINES = ["8つの選択を分析中……","あなたの行動パターン……","人との距離感……","そして最後に……","あなたは……"];
+function analyze(){
+  show("analyzing");
+  const box = $("alines");
+  box.innerHTML = "";
+  ALINES.forEach((t,i)=>{
+    const p = document.createElement("p");
+    p.className = "aline"; p.textContent = t;
+    box.appendChild(p);
+    setTimeout(()=>p.classList.add("show"), 450 + i*750);
+  });
+  setTimeout(renderResult, 450 + ALINES.length*750 + 700);
+}
+
+let currentType = null;
+function renderResult(){
+  const key = judge();
+  const t = TYPES[key];
+  currentType = t;
+  $("rEmoji").textContent = t.emoji;
+  $("rName").textContent = t.name;
+  $("rCatch").textContent = t.catch;
+  $("rDesc").textContent = t.desc;
+  $("rAru").innerHTML = t.aru.map(a=>`<li></li>`).join("");
+  [...$("rAru").children].forEach((li,i)=>li.appendChild(document.createTextNode(t.aru[i])));
+  $("rFeat").textContent = t.feat;
+  $("rSurprise").textContent = t.surprise;
+  $("rFriend").textContent = t.friend;
+  $("rWorry").textContent = t.worry;
+  $("rTags").innerHTML = (t.tags||[]).map(()=>`<span class="tag"></span>`).join("");
+  [...$("rTags").children].forEach((el,i)=>el.appendChild(document.createTextNode(t.tags[i])));
+  $("rRare").style.display = t.rare ? "block" : "none";
+  $("result").classList.toggle("special", !!t.rare);
+  show("result");
+}
+
+/* ---------- 共有 ---------- */
+function toast(msg){
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  setTimeout(()=>el.classList.remove("on"), 3200);
+}
+async function share(){
+  const text = `私は「${currentType.emoji} ${currentType.name}」でした。\n${currentType.catch}\n― 今日は、なんでもない一日のはずだった。`;
+  try{
+    if(navigator.share){
+      await navigator.share({title:"今日は、なんでもない一日のはずだった。", text});
+      return;
+    }
+  }catch(e){ /* キャンセル時も下のフォールバックへ進まない */ 
+    if(e && e.name === "AbortError") return;
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("結果をコピーしました。友達に送ってみて！");
+    return;
+  }catch(e){}
+  toast("結果をスクショして友達に送ってみて！");
+}
+
+/* ---------- 初期化 ---------- */
+buildDots();
+paintSky(0);
+$("startBtn").addEventListener("click",()=>{ idx=0; picks=[]; show("quiz"); renderQ(); });
+$("retryBtn").addEventListener("click",()=>{ idx=0; picks=[]; paintSky(0); show("intro"); });
+$("shareBtn").addEventListener("click",share);
+$("soudanBtn").addEventListener("click",()=>{
+  if(CONFIG.soudanUrl){ window.open(CONFIG.soudanUrl,"_blank","noopener"); }
+  else{ toast(CONFIG.soudanMessage.replace(/\n/g," ")); }
+});
+</script>
+</body>
+</html>
